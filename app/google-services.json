@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "1075726180897",
+    "firebase_url": "https://mysportik-fc961-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "mysportik-fc961",
+    "storage_bucket": "mysportik-fc961.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1075726180897:android:563204650bb0527e7cb960",
+        "android_client_info": {
+          "package_name": "com.example.mysportik"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD0PZKAfhRUAuCbZhz-pBue4uAHGhKhwr0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
