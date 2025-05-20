@@ -15,6 +15,9 @@
         android:theme="@style/Theme.Sportik"
         tools:targetApi="31">
         <activity
+            android:name=".UserMarksActivity"
+            android:exported="false" />
+        <activity
             android:name=".GeohashTable"
             android:exported="false" />
         <activity
