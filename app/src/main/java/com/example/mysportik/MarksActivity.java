@@ -28,10 +28,14 @@ import com.google.firebase.database.ServerValue;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import com.example.mysportik.GeohashTable;
 
 public class MarksActivity extends AppCompatActivity {
 
     private GeohashStorage storage;
+    private GeohashTable geohashTable;
     EditText center_height2, center_latitude2, marker_text;
     RadioButton public_marker;
 
@@ -56,8 +60,7 @@ public class MarksActivity extends AppCompatActivity {
         marker_text = findViewById(R.id.marker_text);
         public_marker = findViewById(R.id.public_marker);
 
-
-
+        geohashTable = new GeohashTable(7);
 
 
     }
@@ -99,26 +102,55 @@ public class MarksActivity extends AppCompatActivity {
             marker.put("note", marker_text);
             marker.put("timestamp", ServerValue.TIMESTAMP);
 
-            // Сохраняем в корень "Marks"
-            mDatabase.child("Marks").push().setValue(marker)
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                Toast.makeText(MarksActivity.this,
-                                        "Marker saved successfully",
-                                        Toast.LENGTH_SHORT).show();
-                                clearFields();
-                            } else {
-                                Toast.makeText(MarksActivity.this,
-                                        "Failed to save marker: " + task.getException().getMessage(),
-                                        Toast.LENGTH_SHORT).show();
-                            }
+//          geohashTable.addMarker(lat, lon, new HashMap<>(marker));
+
+            // Получаем уникальный ID для метки
+            String markerId = mDatabase.child("Marks").push().getKey();
+
+            // 1. Сохраняем в основное хранилище Marks
+            mDatabase.child("Marks").child(markerId).setValue(marker)
+                    .addOnCompleteListener(mainTask -> {
+                        if (mainTask.isSuccessful()) {
+                            // 2. Сохраняем в GeohashIndex (без дублирования geohash)
+                            Map<String, Object> indexEntry = new HashMap<>(marker);
+                            indexEntry.remove("geohash");
+
+                            mDatabase.child("GeohashIndex").child(geohash).child(markerId)
+                                    .setValue(indexEntry)
+                                    .addOnCompleteListener(indexTask -> {
+                                        if (indexTask.isSuccessful()) {
+                                            // 3. Локальное хранилище
+                                            geohashTable.addMarker(lat, lon, marker);
+
+                                            runOnUiThread(() -> {
+                                                Toast.makeText(MarksActivity.this,
+                                                        "Метка успешно сохранена",
+                                                        Toast.LENGTH_SHORT).show();
+                                                clearFields();
+                                            });
+                                        } else {
+                                            // Откатываем основное сохранение при ошибке индекса
+                                            mDatabase.child("Marks").child(markerId).removeValue();
+                                            runOnUiThread(() ->
+                                                    Toast.makeText(MarksActivity.this,
+                                                            "Ошибка сохранения индекса: " + indexTask.getException().getMessage(),
+                                                            Toast.LENGTH_LONG).show()
+                                            );
+                                        }
+                                    });
+                        } else {
+                            runOnUiThread(() ->
+                                    Toast.makeText(MarksActivity.this,
+                                            "Ошибка сохранения метки: " + mainTask.getException().getMessage(),
+                                            Toast.LENGTH_LONG).show()
+                            );
                         }
                     });
 
         } catch (NumberFormatException e) {
-            Toast.makeText(this, "Invalid coordinates format", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Неверный формат координат", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            Toast.makeText(this, "Неизвестная ошибка: " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
     private void clearFields() {
