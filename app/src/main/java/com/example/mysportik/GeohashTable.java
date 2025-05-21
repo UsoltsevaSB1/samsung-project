@@ -32,6 +32,7 @@ public class GeohashTable {
         }
 
 
+
         // Добавляем в геохэш-индекс
         geohashMap.computeIfAbsent(geohash, k -> new ArrayList<>()).add(markerData);
 
