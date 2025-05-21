@@ -136,33 +136,33 @@ public class UserMarksActivity extends AppCompatActivity {
         privateMarksListView.setAdapter(privateAdapter);
     }
 
-//    private void setupListClickListeners() {
-//        publicMarksListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Marker selectedMarker = publicMarkers.get(position);
-//                openMapWithMarker(selectedMarker, true);
-//            }
-//        });
-//
-//        privateMarksListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Marker selectedMarker = privateMarkers.get(position);
-//                openMapWithMarker(selectedMarker, false);
-//            }
-//        });
-//    }
+    private void setupListClickListeners() {
+        publicMarksListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Marker selectedMarker = publicMarkers.get(position);
+                openMapWithMarker(selectedMarker, true);
+            }
+        });
 
-//    private void openMapWithMarker(Marker marker, boolean isPublic) {
-//        Intent mapIntent = new Intent(UserMarksActivity.this, MapActivity.class);
-//        mapIntent.putExtra("latitude", marker.getLatitude());
-//        mapIntent.putExtra("longitude", marker.getLongitude());
-//        mapIntent.putExtra("name", marker.getName());
-//        mapIntent.putExtra("note", marker.getNote());
-//        mapIntent.putExtra("isPublic", isPublic);
-//        startActivity(mapIntent);
-//    }
+        privateMarksListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Marker selectedMarker = privateMarkers.get(position);
+                openMapWithMarker(selectedMarker, false);
+            }
+        });
+    }
+
+    private void openMapWithMarker(Marker marker, boolean isPublic) {
+        Intent mapIntent = new Intent(UserMarksActivity.this, MapMarksActivity.class);
+        mapIntent.putExtra("latitude", marker.getLatitude());
+        mapIntent.putExtra("longitude", marker.getLongitude());
+        mapIntent.putExtra("name", marker.getName());
+        mapIntent.putExtra("note", marker.getNote());
+        mapIntent.putExtra("isPublic", isPublic);
+        startActivity(mapIntent);
+    }
 
     @Override
     protected void onResume() {
