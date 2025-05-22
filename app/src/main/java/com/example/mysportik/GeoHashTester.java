@@ -4,9 +4,6 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.util.Log;
-import android.widget.Toast;
-import android.content.Context;
 public class GeoHashTester {
     private static final String TAG = "GeoHashTest";
 
@@ -131,9 +128,9 @@ public class GeoHashTester {
             Log.d(TAG, "Found " + foundMarkers.size() + " markers:");
             for (Marker marker : foundMarkers) {
                 double dist = Marker.calculateDistance(
-                        centerLat, centerLon, marker.lat, marker.lon);
+                        centerLat, centerLon, marker.latitude, marker.longitude);
                 Log.d(TAG, String.format("- %s (%.6f,%.6f) %.3f km",
-                        marker.name, marker.lat, marker.lon, dist));
+                        marker.name, marker.latitude, marker.longitude, dist));
             }
         }
     }
@@ -142,8 +139,8 @@ public class GeoHashTester {
         Marker marker = new Marker();
         String markerId = marker.getId();  // Корректный доступ
         marker.name = "Test " + id;
-        marker.lat = lat;
-        marker.lon = lon;
+        marker.latitude = lat;
+        marker.longitude = lon;
         return marker;
     }
 }

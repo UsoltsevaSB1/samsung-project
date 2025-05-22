@@ -22,6 +22,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -95,6 +96,107 @@ public class MarksActivity extends AppCompatActivity {
     }
 
     private void searchMarkersInRadius(double centerLat, double centerLon, double radiusKm) {
+        // 1. Генерируем 4-символьный геохеш для центра поиска
+        String targetGeohashPrefix = GeoHashConverter.encode(centerLat, centerLon, 4);
+
+        // 2. Получаем ссылку на корневой узел GeohashIndex
+        DatabaseReference geohashIndexRef = FirebaseDatabase.getInstance()
+                .getReference("GeohashIndex");
+
+        // 3. Поиск всех узлов с совпадающим 4-символьным префиксом
+        geohashIndexRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                List<Marker> publicMarkers = new ArrayList<>();
+
+                // 4. Итерируем по всем узлам GeohashIndex
+                for (DataSnapshot geohashNode : task.getResult().getChildren()) {
+                    String nodeGeohash = geohashNode.getKey();
+
+                    // 5. Проверяем совпадение первых 4 символов
+                    if (nodeGeohash != null && nodeGeohash.startsWith(targetGeohashPrefix)) {
+
+                        // 6. Обрабатываем все метки внутри узла
+                        for (DataSnapshot markerSnapshot : geohashNode.getChildren()) {
+                            Marker marker = markerSnapshot.getValue(Marker.class);
+                            if (marker != null && "public".equals(marker.getStatus())) {
+                                marker.setId(markerSnapshot.getKey());
+                                publicMarkers.add(marker);
+                            }
+                        }
+                    }
+                }
+
+                // 7. Фильтрация по радиусу
+                List<Marker> filteredMarkers = Marker.findMarkersInRadius(
+                        publicMarkers,
+                        centerLat,
+                        centerLon,
+                        radiusKm
+                );
+
+                // 8. Обработка результатов
+                if (filteredMarkers.isEmpty()) {
+                    Toast.makeText(this, "Меток в радиусе " + radiusKm + " км не найдено",
+                            Toast.LENGTH_SHORT).show();
+                } else {
+
+                    // openMapWithMarkers(filteredMarkers, centerLat, centerLon);
+                }
+            } else {
+                Toast.makeText(this, "Ошибка загрузки данных: " + task.getException().getMessage(),
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    /*private void searchMarkersInRadius(double centerLat, double centerLon, double radiusKm) {
+        // Получаем ссылку на корневой узел с метками
+        DatabaseReference geohashRef = FirebaseDatabase.getInstance().getReference("GeohashIndex");
+
+        // Запрашиваем только публичные метки
+        geohashIndexRef.orderByChild("status").equalTo("public")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        List<Marker> publicMarkers = new ArrayList<>();
+
+                        // Собираем все публичные метки
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            Marker marker = snapshot.getValue(Marker.class);
+                            if (marker != null) {
+                                marker.setId(snapshot.getKey()); // Устанавливаем ID
+                                publicMarkers.add(marker);
+                            }
+                        }
+
+                        // Используем алгоритм поиска из класса Marker
+                        List<Marker> foundMarkers = Marker.findMarkersInRadius(
+                                publicMarkers,
+                                centerLat,
+                                centerLon,
+                                radiusKm
+                        );
+
+                        // Обработка результатов
+                        if (foundMarkers.isEmpty()) {
+                            Toast.makeText(MarksActivity.this,
+                                    "Меток в радиусе " + radiusKm + " км не найдено",
+                                    Toast.LENGTH_SHORT).show();
+                        } else {
+                            openMapWithMarkers(foundMarkers, centerLat, centerLon);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Toast.makeText(MarksActivity.this,
+                                "Ошибка загрузки меток: " + databaseError.getMessage(),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }*/
+
+    /*private void searchMarkersInRadius(double centerLat, double centerLon, double radiusKm) {
         // Определяем оптимальную точность геохеша
         int precision = Marker.calculateOptimalPrecision(radiusKm);
         String centerGeohash = GeoHashConverter.encode(centerLat, centerLon, precision);
@@ -136,7 +238,7 @@ public class MarksActivity extends AppCompatActivity {
         }).addOnFailureListener(e -> {
             Toast.makeText(this, "Ошибка поиска: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         });
-    }
+    }*/
 
     private void openMapWithMarkers(List<Marker> markers, double centerLat, double centerLon) {
         Intent intent = new Intent(this, MapMarksActivity.class);

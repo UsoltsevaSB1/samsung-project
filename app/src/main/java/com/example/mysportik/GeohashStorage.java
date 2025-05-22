@@ -10,7 +10,7 @@ public class GeohashStorage {
 
     // Добавление метки в хранилище
     public void addMarker(Marker marker, int precision) {
-        String geohash = GeoHashConverter.encode(marker.lat, marker.lon, precision);
+        String geohash = GeoHashConverter.encode(marker.latitude, marker.longitude, precision);
         // Если для данного геохэша нет записи, создаем новый список, добавляем метку в список
         storage.computeIfAbsent(geohash, k -> new ArrayList<>()).add(marker);
     }
@@ -30,7 +30,7 @@ public class GeohashStorage {
         // Точная фильтрация: оставляем только метки в заданном радиусе
         List<Marker> result = new ArrayList<>();
         for (Marker marker : candidates) {
-            if (calculateDistance(centerLat, centerLon, marker.lat, marker.lon) <= radiusKm) {
+            if (calculateDistance(centerLat, centerLon, marker.latitude, marker.longitude) <= radiusKm) {
                 result.add(marker);
             }
         }
