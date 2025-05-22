@@ -14,6 +14,10 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 
+import android.util.Log;
+import android.widget.Toast;
+import android.content.Context;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -39,5 +43,23 @@ public class MainActivity extends AppCompatActivity {
                 finish();
             }
         });
+        runGeoHashTests();
+
+    }
+
+    private void runGeoHashTests() {
+        // Запускаем в отдельном потоке, чтобы не блокировать UI
+        new Thread(() -> {
+            Log.d("GeoHashTest", "=== Начало тестирования ===");
+            GeoHashTester.runAllTests();
+            Log.d("GeoHashTest", "=== Тестирование завершено ===");
+
+            // Если нужно обновить UI после тестов
+            runOnUiThread(() -> {
+                Toast.makeText(MainActivity.this,
+                        "Тесты завершены, смотрите логи",
+                        Toast.LENGTH_SHORT).show();
+            });
+        }).start();
     }
 }

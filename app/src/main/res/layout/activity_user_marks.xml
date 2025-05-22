@@ -28,8 +28,44 @@
             android:textSize="20sp"
             android:textStyle="bold"
             android:layout_centerInParent="true"/>
-
     </RelativeLayout>
+
+    <!-- Новая панель поиска -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="16dp"
+        android:gravity="center_vertical">
+
+        <ImageButton
+            android:id="@+id/searchButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@android:drawable/ic_search_category_default"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Поиск"/>
+
+        <EditText
+            android:id="@+id/radiusEditText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Радиус (км)"
+            android:inputType="numberDecimal"
+            android:padding="8dp"
+            android:layout_marginHorizontal="8dp"/>
+
+        <EditText
+            android:id="@+id/selectedMarkerTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="8dp"
+            android:background="@android:drawable/editbox_background"
+            android:text="Выберите меткy"
+            android:textColor="@android:color/black"/>
+    </LinearLayout>
 
     <TextView
         android:layout_width="match_parent"

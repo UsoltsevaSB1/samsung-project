@@ -60,14 +60,45 @@ public class GeoHashConverter {
         return hash.toString();
     }
 
-    //Декодирует геохаш в координаты (центр ячейки)
+//    //Декодирует геохаш в координаты (центр ячейки)
+//    public static double[] decode(String geohash) {
+//        boolean isEven = true;
+//        double[] latInterval = {-90.0, 90.0};
+//        double[] lonInterval = {-180.0, 180.0};
+//
+//        for (char c : geohash.toCharArray()) {
+//            int val = BASE32.indexOf(c);
+//            for (int i = 0; i < BITS_PER_CHAR; i++) {
+//                int mask = 1 << (4 - i);
+//                if (isEven) {
+//                    refineInterval(lonInterval, (val & mask) != 0);
+//                } else {
+//                    refineInterval(latInterval, (val & mask) != 0);
+//                }
+//                isEven = !isEven;
+//            }
+//        }
+//        // Добавьте проверку границ
+//        double lat = (latInterval[0] + latInterval[1]) / 2;
+//        double lon = (lonInterval[0] + lonInterval[1]) / 2;
+//
+//        // Ограничиваем значения координат
+//        lat = Math.max(-90.0, Math.min(90.0, lat));
+//        lon = Math.max(-180.0, Math.min(180.0, lon));
+//
+//        return new double[]{lat, lon};
+//    }
+
+    // В GeoHashConverter.java
     public static double[] decode(String geohash) {
-        boolean isEven = true;
         double[] latInterval = {-90.0, 90.0};
         double[] lonInterval = {-180.0, 180.0};
+        boolean isEven = true;
 
         for (char c : geohash.toCharArray()) {
             int val = BASE32.indexOf(c);
+            if (val == -1) throw new IllegalArgumentException("Invalid geohash character");
+
             for (int i = 0; i < BITS_PER_CHAR; i++) {
                 int mask = 1 << (4 - i);
                 if (isEven) {
@@ -78,19 +109,56 @@ public class GeoHashConverter {
                 isEven = !isEven;
             }
         }
-        return new double[] {
-                (latInterval[0] + latInterval[1]) / 2,
-                (lonInterval[0] + lonInterval[1]) / 2
-        };
+
+        // Добавить проверку границ
+        double lat = Math.max(-90.0, Math.min(90.0, (latInterval[0] + latInterval[1]) / 2));
+        double lon = Math.max(-180.0, Math.min(180.0, (lonInterval[0] + lonInterval[1]) / 2));
+
+        return new double[]{lat, lon};
     }
+//    public static double[] decode(String geohash) {
+//        double[] latInterval = {-90.0, 90.0};
+//        double[] lonInterval = {-180.0, 180.0};
+//        boolean isEven = true;
+//
+//        for (char c : geohash.toCharArray()) {
+//            int val = BASE32.indexOf(c);
+//            if (val == -1) throw new IllegalArgumentException("Invalid geohash character");
+//
+//            // Обрабатываем 5 бит на каждый символ
+//            for (int i = 0; i < 5; i++) {
+//                int mask = 1 << (4 - i);  // Маска для бита
+//                if (isEven) {
+//                    refineInterval(lonInterval, (val & mask) != 0);
+//                } else {
+//                    refineInterval(latInterval, (val & mask) != 0);
+//                }
+//                isEven = !isEven;
+//            }
+//        }
+//
+//        // Возвращаем центр ячейки
+//        return new double[]{
+//                (latInterval[0] + latInterval[1]) / 2,
+//                (lonInterval[0] + lonInterval[1]) / 2
+//        };
+//    }
 
     //Уточняет интервал на основе текущего бита
-    private static void refineInterval(double[] interval, boolean bit) {
+//    private static void refineInterval(double[] interval, boolean bit) {
+//        double mid = (interval[0] + interval[1]) / 2;
+//        if (bit) {
+//            interval[0] = mid;
+//        } else {
+//            interval[1] = mid;
+//        }
+//    }
+    private static void refineInterval(double[] interval, boolean isUpperHalf) {
         double mid = (interval[0] + interval[1]) / 2;
-        if (bit) {
-            interval[0] = mid;
+        if (isUpperHalf) {
+            interval[0] = mid;  // Сужаем к верхней половине
         } else {
-            interval[1] = mid;
+            interval[1] = mid;  // Сужаем к нижней половине
         }
     }
 
