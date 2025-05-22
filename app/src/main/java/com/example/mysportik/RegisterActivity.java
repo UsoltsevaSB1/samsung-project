@@ -55,7 +55,7 @@ public class RegisterActivity extends AppCompatActivity {
                 String username = binding.emailEt2.getText().toString().trim();
 
                 if (email.isEmpty() || password.isEmpty() || username.isEmpty()) {
-                    Toast.makeText(RegisterActivity.this, "All fields are required", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegisterActivity.this, "Заполните все поля ", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -83,17 +83,17 @@ public class RegisterActivity extends AppCompatActivity {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if (task.isSuccessful()) {
-                                                Toast.makeText(RegisterActivity.this, "Registration successful", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(RegisterActivity.this, "Резистрация прошла успешно", Toast.LENGTH_SHORT).show();
                                                 startActivity(new Intent(RegisterActivity.this, MainActivity.class));
                                                 finish();
                                             } else {
-                                                Toast.makeText(RegisterActivity.this, "Failed to save user data: " +
+                                                Toast.makeText(RegisterActivity.this, "Ошибка сохранения данных пользователя: " +
                                                         task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                                             }
                                         }
                                     });
                         } else {
-                            Toast.makeText(RegisterActivity.this, "Registration failed: " +
+                            Toast.makeText(RegisterActivity.this, "Ошибка регистрации: попробуйте ещё раз: " +
                                     task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     }

@@ -131,33 +131,6 @@ public class Marker {
         };
     }
 
-//    // Получение соседних геохешей
-//    public static List<String> getNeighboringGeohashes(String geohash) {
-//        List<String> neighbors = new ArrayList<>();
-//        double[][] bbox = GeoHashConverter.getBoundingBox(geohash);
-//        double latSize = bbox[0][1] - bbox[0][0];
-//        double lonSize = bbox[1][1] - bbox[1][0];
-//        double[] center = GeoHashConverter.decode(geohash);
-//
-//        // 8 направлений
-//        double[] offsets = {-1, 0, 1};
-//        for (double latOffset : offsets) {
-//            for (double lonOffset : offsets) {
-//                if (latOffset == 0 && lonOffset == 0) continue;
-//
-//                double neighborLat = center[0] + latOffset * latSize;
-//                double neighborLon = center[1] + lonOffset * lonSize;
-//
-//                if (Math.abs(neighborLat) <= 90 && Math.abs(neighborLon) <= 180) {
-//                    neighbors.add(GeoHashConverter.encode(
-//                            neighborLat, neighborLon, geohash.length()));
-//                }
-//            }
-//        }
-//        return neighbors;
-//    }
-//
-//
 public static List<String> getNeighboringGeohashes(String geohash) {
     List<String> neighbors = new ArrayList<>();
     int precision = geohash.length();
