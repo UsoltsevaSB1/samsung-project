@@ -1,11 +1,14 @@
 package com.example.mysportik;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
@@ -28,6 +31,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+
+import java.util.Locale;
+
+
+
+
+
 
 public class MarksActivity extends AppCompatActivity {
 
@@ -84,6 +95,18 @@ public class MarksActivity extends AppCompatActivity {
                 double radius = Double.parseDouble(radiusInput.getText().toString());
 
                 searchMarkersInRadius(lat, lon, radius);
+//                @Override
+//                public void onSearchComplete(List<Marker> foundMarkers) {
+//                    // Переход на UserMarksActivity
+//                    Intent intent = new Intent(MarksActivity.this, UserMarksActivity.class);
+//                    intent.putParcelableArrayListExtra("found_markers", new ArrayList<>(foundMarkers));
+//                    startActivity(intent);
+//
+//                    // Закрываем диалог
+//                    ((AlertDialog) dialog).dismiss();
+//                }
+//            });
+
             } catch (NumberFormatException e) {
                 Toast.makeText(this, "Проверьте правильность ввода данных", Toast.LENGTH_SHORT).show();
             }
@@ -93,27 +116,206 @@ public class MarksActivity extends AppCompatActivity {
         builder.show();
     }
 
-    private void searchMarkersInRadius(double centerLat, double centerLon, double radiusKm) {
-        // 1. Генерируем 4-символьный геохеш для центра поиска
-        String targetGeohashPrefix = GeoHashConverter.encode(centerLat, centerLon, 4);
+//    private void searchMarkersInRadius(double centerLat, double centerLon, double radiusKm) {
+//        // 1. Генерируем 4-символьный геохеш для центра поиска
+//        String targetGeohashPrefix = GeoHashConverter.encode(centerLat, centerLon, 4);
+//
+//        // 2. Получаем ссылку на корневой узел GeohashIndex
+//        DatabaseReference geohashIndexRef = FirebaseDatabase.getInstance()
+//                .getReference("GeohashIndex");
+//
+//        // 3. Поиск всех узлов с совпадающим 4-символьным префиксом
+//        geohashIndexRef.get().addOnCompleteListener(task -> {
+//            if (task.isSuccessful()) {
+//                List<Marker> publicMarkers = new ArrayList<>();
+//
+//                // 4. Итерируем по всем узлам GeohashIndex
+//                for (DataSnapshot geohashNode : task.getResult().getChildren()) {
+//                    String nodeGeohash = geohashNode.getKey();
+//
+//                    // 5. Проверяем совпадение первых 4 символов
+//                    if (nodeGeohash != null && nodeGeohash.startsWith(targetGeohashPrefix)) {
+//
+//                        // 6. Обрабатываем все метки внутри узла
+//                        for (DataSnapshot markerSnapshot : geohashNode.getChildren()) {
+//                            Marker marker = markerSnapshot.getValue(Marker.class);
+//                            if (marker != null && "public".equals(marker.getStatus())) {
+//                                marker.setId(markerSnapshot.getKey());
+//                                publicMarkers.add(marker);
+//                            }
+//                        }
+//                    }
+//                }
+//
+//                // 7. Фильтрация по радиусу
+//                List<Marker> filteredMarkers = Marker.findMarkersInRadius(
+//                        publicMarkers,
+//                        centerLat,
+//                        centerLon,
+//                        radiusKm
+//                );
+//
+//                // 8. Обработка результатов
+//                if (filteredMarkers.isEmpty()) {
+//                    To
+//
+//                   ast.makeText(this, "Меток в радиусе " + radiusKm + " км не найдено",
+//                            Toast.LENGTH_SHORT).show();
+//                } else {
+//
+//                    openMapWithMarkers(filteredMarkers, centerLat, centerLon);
+//                }
+//            } else {
+//                Toast.makeText(this, "Ошибка загрузки данных: " + task.getException().getMessage(),
+//                        Toast.LENGTH_SHORT).show();
+//            }
+//        });
+//    }
 
-        // 2. Получаем ссылку на корневой узел GeohashIndex
+//    private void openMapWithMarkers(List<Marker> markers, double centerLat, double centerLon) {
+//        Intent intent = new Intent(this, MapMarksActivity.class);
+//        intent.putExtra("center_lat", centerLat);
+//        intent.putExtra("center_lon", centerLon);
+//        intent.putExtra("markers", new ArrayList<>(markers));
+//        startActivity(intent);
+//    }
+
+
+
+
+private void openMapWithMarkers(List<Marker> markers, double centerLat, double centerLon) {
+    Intent intent = new Intent(this, MapMarksActivity.class);
+    intent.putParcelableArrayListExtra("markers_list", new ArrayList<>(markers));
+    intent.putExtra("center_lat", centerLat);
+    intent.putExtra("center_lon", centerLon);
+    startActivity(intent);
+}
+
+
+
+
+
+//
+//    private void searchMarkersInRadius(double centerLat, double centerLon, double radiusKm) {
+//        // 1. Генерируем 4-символьный геохеш
+//        String targetGeohashPrefix = GeoHashConverter.encode(centerLat, centerLon, 4);
+//
+//        // 2. Получаем ссылку на GeohashIndex
+//        DatabaseReference geohashIndexRef = FirebaseDatabase.getInstance()
+//                .getReference("GeohashIndex");
+//
+//        // Показываем индикатор загрузки
+//        ProgressDialog progressDialog = new ProgressDialog(this);
+//        progressDialog.setMessage("Идёт поиск меток...");
+//        progressDialog.setCancelable(false);
+//        progressDialog.show();
+//
+//        // 3. Поиск в Firebase
+//        geohashIndexRef.get().addOnCompleteListener(task -> {
+//            progressDialog.dismiss(); // Скрываем индикатор
+//
+//            if (task.isSuccessful()) {
+//                List<Marker> publicMarkers = new ArrayList<>();
+//
+//                // Обработка результатов
+//                for (DataSnapshot geohashNode : task.getResult().getChildren()) {
+//                    String nodeGeohash = geohashNode.getKey();
+//                    if (nodeGeohash != null && nodeGeohash.startsWith(targetGeohashPrefix)) {
+//                        for (DataSnapshot markerSnapshot : geohashNode.getChildren()) {
+//                            Marker marker = markerSnapshot.getValue(Marker.class);
+//                            if (marker != null && "public".equals(marker.getStatus())) {
+//                                marker.setId(markerSnapshot.getKey());
+//                                publicMarkers.add(marker);
+//                            }
+//                        }
+//                    }
+//                }
+//
+//                // Фильтрация по радиусу
+//                List<Marker> filteredMarkers = Marker.findMarkersInRadius(
+//                        publicMarkers, centerLat, centerLon, radiusKm);
+//
+//                // Показываем результаты в диалоге
+//                showResultsDialog(filteredMarkers, centerLat, centerLon, radiusKm);
+//
+//            } else {
+//                Toast.makeText(this, "Ошибка загрузки: " + task.getException().getMessage(),
+//                        Toast.LENGTH_SHORT).show();
+//            }
+//        });
+//    }
+//
+//    private void showResultsDialog(List<Marker> markers, double centerLat, double centerLon, double radius) {
+//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//        builder.setTitle("Результаты поиска");
+//
+//        // Формируем сообщение
+//        String message = String.format(Locale.getDefault(),
+//                "Найдено меток: %d\nРадиус поиска: %.1f км\nЦентр: %.6f, %.6f",
+//                markers.size(), radius, centerLat, centerLon);
+//
+//        if (!markers.isEmpty()) {
+//            message += "\n\nПервые 5 меток:";
+//            int count = Math.min(markers.size(), 5);
+//            for (int i = 0; i < count; i++) {
+//                Marker m = markers.get(i);
+//                message += String.format(Locale.getDefault(),
+//                        "\n%d. %s (%.6f, %.6f)",
+//                        i+1, m.getName(), m.getLatitude(), m.getLongitude());
+//            }
+//        }
+//
+//        builder.setMessage(message);
+//
+//        // Кнопки диалога
+//        builder.setPositiveButton("Показать на карте", (dialog, which) -> {
+//            openMapWithMarkers(markers, centerLat, centerLon);
+//        });
+//
+//        builder.setNegativeButton("Закрыть", null);
+//
+//        // Дополнительная кнопка для экспорта
+//        builder.setNeutralButton("Экспорт в CSV", (dialog, which) -> {
+//            exportToCsv(markers);
+//        });
+//
+//        builder.show();
+//    }
+
+//    private void exportToCsv(List<Marker> markers) {
+//        // Реализация экспорта (пример)
+//        StringBuilder csv = new StringBuilder("ID,Name,Latitude,Longitude\n");
+//        for (Marker m : markers) {
+//            csv.append(String.format(Locale.US, "%s,%s,%.6f,%.6f\n",
+//                    m.getId(), m.getName(), m.getLatitude(), m.getLongitude()));
+//        }
+//
+//        // Здесь должна быть логика сохранения файла
+//        Toast.makeText(this, "Готово к экспорту " + markers.size() + " меток",
+//                Toast.LENGTH_SHORT).show();
+//    }
+//
+
+    private void searchMarkersInRadius(double centerLat, double centerLon, double radiusKm) {
+        // Показываем индикатор загрузки
+        ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Идет поиск меток...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+
+        String targetGeohashPrefix = GeoHashConverter.encode(centerLat, centerLon, 4);
         DatabaseReference geohashIndexRef = FirebaseDatabase.getInstance()
                 .getReference("GeohashIndex");
 
-        // 3. Поиск всех узлов с совпадающим 4-символьным префиксом
         geohashIndexRef.get().addOnCompleteListener(task -> {
+            progressDialog.dismiss();
+
             if (task.isSuccessful()) {
                 List<Marker> publicMarkers = new ArrayList<>();
 
-                // 4. Итерируем по всем узлам GeohashIndex
                 for (DataSnapshot geohashNode : task.getResult().getChildren()) {
                     String nodeGeohash = geohashNode.getKey();
-
-                    // 5. Проверяем совпадение первых 4 символов
                     if (nodeGeohash != null && nodeGeohash.startsWith(targetGeohashPrefix)) {
-
-                        // 6. Обрабатываем все метки внутри узла
                         for (DataSnapshot markerSnapshot : geohashNode.getChildren()) {
                             Marker marker = markerSnapshot.getValue(Marker.class);
                             if (marker != null && "public".equals(marker.getStatus())) {
@@ -124,36 +326,73 @@ public class MarksActivity extends AppCompatActivity {
                     }
                 }
 
-                // 7. Фильтрация по радиусу
                 List<Marker> filteredMarkers = Marker.findMarkersInRadius(
-                        publicMarkers,
-                        centerLat,
-                        centerLon,
-                        radiusKm
-                );
+                        publicMarkers, centerLat, centerLon, radiusKm);
 
-                // 8. Обработка результатов
                 if (filteredMarkers.isEmpty()) {
-                    Toast.makeText(this, "Меток в радиусе " + radiusKm + " км не найдено",
-                            Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Меток не найдено", Toast.LENGTH_SHORT).show();
                 } else {
-
-                    // openMapWithMarkers(filteredMarkers, centerLat, centerLon);
+                    showResultsDialog(filteredMarkers, centerLat, centerLon, radiusKm);
                 }
             } else {
-                Toast.makeText(this, "Ошибка загрузки данных: " + task.getException().getMessage(),
+                Toast.makeText(this, "Ошибка поиска: " + task.getException().getMessage(),
                         Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void openMapWithMarkers(List<Marker> markers, double centerLat, double centerLon) {
-        Intent intent = new Intent(this, MapMarksActivity.class);
-        intent.putExtra("center_lat", centerLat);
-        intent.putExtra("center_lon", centerLon);
-        intent.putExtra("markers", new ArrayList<>(markers));
-        startActivity(intent);
+
+    private void showResultsDialog(List<Marker> markers, double centerLat, double centerLon, double radius) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Результаты поиска");
+
+        // Загружаем кастомный layout
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_markers_results, null);
+        TextView summaryText = dialogView.findViewById(R.id.summary_text);
+        TextView markersText = dialogView.findViewById(R.id.markers_text);
+
+        // Устанавливаем сводную информацию
+        String summary = String.format(Locale.getDefault(),
+                "Найдено меток: %d\nРадиус: %.1f км\nЦентр: %.6f, %.6f",
+                markers.size(), radius, centerLat, centerLon);
+        summaryText.setText(summary);
+
+        // Формируем текст со всеми метками
+        StringBuilder markersContent = new StringBuilder();
+        for (int i = 0; i < markers.size(); i++) {
+            Marker marker = markers.get(i);
+            markersContent.append(String.format(Locale.getDefault(),
+                    "%d. %s\nШирота: %.6f\nДолгота: %.6f\n\n",
+                    i + 1,
+                    marker.getName(),
+                    marker.getLatitude(),
+                    marker.getLongitude()));
+        }
+
+        markersText.setText(markersContent.toString());
+        markersText.setMovementMethod(new ScrollingMovementMethod()); // Включаем прокрутку
+
+        builder.setView(dialogView);
+
+        builder.setPositiveButton("Показать на карте", (dialog, which) -> {
+            openMapWithMarkers(markers, centerLat, centerLon);
+        });
+
+        builder.setNegativeButton("Закрыть", null);
+
+        // Создаем и показываем диалог
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
+
+
+
+
+
+
+
+
+
 
     public void saveMarker(View view) {
         FirebaseUser currentUser = mAuth.getCurrentUser();

@@ -1,8 +1,13 @@
 package com.example.mysportik;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class Marker {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Marker implements Parcelable{
     private String id;
     public double latitude;
     public double longitude;
@@ -14,6 +19,63 @@ public class Marker {
     private transient String geohashCache;
 //
     public Marker() {}
+
+
+
+
+
+
+
+
+
+
+
+
+    // Конструктор для Parcelable
+    protected Marker(Parcel in) {
+        id = in.readString();
+        name = in.readString();
+        latitude = in.readDouble();
+        longitude = in.readDouble();
+        status = in.readString();
+    }
+
+    // Обязательное поле CREATOR
+    public static final Creator<Marker> CREATOR = new Creator<Marker>() {
+        @Override
+        public Marker createFromParcel(Parcel in) {
+            return new Marker(in);  // Создает объект из Parcel
+        }
+
+        @Override
+        public Marker[] newArray(int size) {
+            return new Marker[size];  // Создает массив объектов
+        }
+    };
+
+    // Обязательный метод (обычно возвращает 0)
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    // Записывает поля объекта в Parcel
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(name);
+        dest.writeDouble(latitude);
+        dest.writeDouble(longitude);
+        dest.writeString(status);
+    }
+
+
+
+
+
+
+
+
 
     public String getId() { return id; }
     public String getName() { return name; }

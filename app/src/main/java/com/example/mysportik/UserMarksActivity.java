@@ -29,11 +29,11 @@ import java.util.List;
 public class UserMarksActivity extends AppCompatActivity {
 
     private ListView publicMarksListView;
-    private ListView privateMarksListView;
+    //private ListView privateMarksListView;
     private DatabaseReference databaseReference;
     private FirebaseAuth firebaseAuth;
     private List<Marker> publicMarkers = new ArrayList<>();
-    private List<Marker> privateMarkers = new ArrayList<>();
+    //private List<Marker> privateMarkers = new ArrayList<>();
 
     private ImageButton searchButton;
     private EditText radiusEditText;
@@ -48,13 +48,6 @@ public class UserMarksActivity extends AppCompatActivity {
         // Инициализация Firebase
         firebaseAuth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference("Marks");
-
-        // Инициализация UI элементов
-        publicMarksListView = findViewById(R.id.publicMarksList);
-        privateMarksListView = findViewById(R.id.privateMarksList);
-        searchButton = findViewById(R.id.searchButton);
-        radiusEditText = findViewById(R.id.radiusEditText);
-        selectedMarkerEditText = findViewById(R.id.selectedMarkerTextView);
 
         // Загрузка меток пользователя
         loadUserMarks();
@@ -132,16 +125,16 @@ public class UserMarksActivity extends AppCompatActivity {
             radiusEditText.setText("");
         });
 
-        privateMarksListView.setOnItemClickListener((parent, view, position, id) -> {
-            // Получаем выбранную метку из приватного списка
-            selectedMarker = privateMarkers.get(position);
-            // Устанавливаем название метки в TextView
-            selectedMarkerEditText.setText(selectedMarker.getName());
-            // Устанавливаем красный цвет для приватных меток
-            selectedMarkerEditText.setTextColor(Color.RED);
-            // Очищаем поле радиуса для нового поиска
-            radiusEditText.setText("");
-        });
+//        privateMarksListView.setOnItemClickListener((parent, view, position, id) -> {
+//            // Получаем выбранную метку из приватного списка
+//            selectedMarker = privateMarkers.get(position);
+//            // Устанавливаем название метки в TextView
+//            selectedMarkerEditText.setText(selectedMarker.getName());
+//            // Устанавливаем красный цвет для приватных меток
+//            selectedMarkerEditText.setTextColor(Color.RED);
+//            // Очищаем поле радиуса для нового поиска
+//            radiusEditText.setText("");
+//        });
     }
 
     private void loadUserMarks() {
@@ -152,7 +145,7 @@ public class UserMarksActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         publicMarkers.clear();
-                        privateMarkers.clear();
+                        //privateMarkers.clear();
 
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             Marker marker = snapshot.getValue(Marker.class);
@@ -160,7 +153,7 @@ public class UserMarksActivity extends AppCompatActivity {
                                 if ("public".equals(marker.getStatus())) {
                                     publicMarkers.add(marker);
                                 } else {
-                                    privateMarkers.add(marker);
+                                    //privateMarkers.add(marker);
                                 }
                             }
                         }
@@ -189,21 +182,20 @@ public class UserMarksActivity extends AppCompatActivity {
                 return view;
             }
         };
-
-        ArrayAdapter<Marker> privateAdapter = new ArrayAdapter<Marker>(
-                this, android.R.layout.simple_list_item_1, privateMarkers) {
-            @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
-                View view = super.getView(position, convertView, parent);
-                TextView textView = view.findViewById(android.R.id.text1);
-                textView.setTextColor(Color.RED);
-                textView.setText(getItem(position).getName());
-                return view;
-            }
-        };
-
         publicMarksListView.setAdapter(publicAdapter);
-        privateMarksListView.setAdapter(privateAdapter);
+//        ArrayAdapter<Marker> privateAdapter = new ArrayAdapter<Marker>(
+//                this, android.R.layout.simple_list_item_1, privateMarkers) {
+//            @Override
+//            public View getView(int position, View convertView, ViewGroup parent) {
+//                View view = super.getView(position, convertView, parent);
+//                TextView textView = view.findViewById(android.R.id.text1);
+//                textView.setTextColor(Color.RED);
+//                textView.setText(getItem(position).getName());
+//                return view;
+//            }
+//        };
+
+        //privateMarksListView.setAdapter(privateAdapter);
     }
 
     @Override
