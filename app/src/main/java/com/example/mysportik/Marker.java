@@ -19,18 +19,6 @@ public class Marker implements Parcelable{
     private transient String geohashCache;
 //
     public Marker() {}
-
-
-
-
-
-
-
-
-
-
-
-
     // Конструктор для Parcelable
     protected Marker(Parcel in) {
         id = in.readString();
@@ -38,7 +26,9 @@ public class Marker implements Parcelable{
         latitude = in.readDouble();
         longitude = in.readDouble();
         status = in.readString();
+        note = in.readString();
     }
+
 
     // Обязательное поле CREATOR
     public static final Creator<Marker> CREATOR = new Creator<Marker>() {
@@ -67,27 +57,23 @@ public class Marker implements Parcelable{
         dest.writeDouble(latitude);
         dest.writeDouble(longitude);
         dest.writeString(status);
+        dest.writeString(note);
     }
-
-
-
-
-
-
-
-
-
     public String getId() { return id; }
     public String getName() { return name; }
     public double getLatitude() { return latitude; }
     public double getLongitude() { return longitude; }
     public String getNote() { return note; }
     public String getStatus() { return status; }
+    public void getNote(String note) {this.note = note;}
 
 
     // Добавляем сеттер, если нужно изменять id
     public void setId(String id) {
         this.id = id;
+    }
+    public void setNote(String note) {
+        this.note = note;
     }
 
     // Основной метод поиска

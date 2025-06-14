@@ -12,7 +12,7 @@
         android:layout_marginBottom="16dp">
 
         <ImageButton
-            android:id="@+id/backButton"
+            android:id="@+id/backButton1"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:src="@android:drawable/ic_menu_revert"
@@ -24,13 +24,12 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Найденные метки"
+            android:text="Мои метки"
             android:textSize="20sp"
             android:textStyle="bold"
             android:layout_centerInParent="true"/>
-    </RelativeLayout>
 
-    <!-- Новая панель поиска -->
+    </RelativeLayout>
 
     <TextView
         android:layout_width="match_parent"
@@ -45,6 +44,21 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:divider="@android:color/transparent"
-        android:dividerHeight="8dp" />
+        android:dividerHeight="8dp"/>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Приватные метки"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp"/>
+
+    <ListView
+        android:id="@+id/privateMarksList"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="8dp"/>
 </LinearLayout>
