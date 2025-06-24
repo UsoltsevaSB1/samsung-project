@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
         marks.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, MarksActivity.class));
+                startActivity(new Intent(MainActivity.this, MapMarksActivity.class));
                 finish();
             }
         });

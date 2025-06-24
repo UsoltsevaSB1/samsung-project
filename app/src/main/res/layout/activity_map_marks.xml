@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -11,23 +10,39 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
+    <!-- Контейнер для кнопок в правом верхнем углу -->
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        tools:ignore="MissingConstraints">
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:orientation="vertical"
+        android:background="@drawable/rounded_bg"
+        android:elevation="8dp">
 
-    <ImageButton
-        android:id="@+id/backButton1"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:src="@android:drawable/ic_menu_revert"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:contentDescription="Назад"
-        android:layout_alignParentStart="true"
-        android:layout_centerVertical="true"
-        tools:ignore="MissingConstraints" />
-    </RelativeLayout>
+        <!-- Кнопка добавления меток -->
+        <Button
+            android:id="@+id/btn_add_marker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Добавить метку"
+            android:padding="12dp"
+            android:backgroundTint="#4CAF50"
+            android:textColor="#FFFFFF"/>
 
+        <!-- Кнопка добавления заметок (изначально скрыта) -->
+        <Button
+            android:id="@+id/btn_add_note"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Добавить заметку"
+            android:padding="12dp"
+            android:visibility="gone"
+            android:backgroundTint="#2196F3"
+            android:textColor="#FFFFFF"/>
+    </LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>
+
