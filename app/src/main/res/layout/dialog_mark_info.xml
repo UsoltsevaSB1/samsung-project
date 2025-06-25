@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/et_mark_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Название места"
+        android:inputType="textCapWords"/>
+
+    <EditText
+        android:id="@+id/et_mark_note"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Заметка"
+        android:inputType="textMultiLine"
+        android:minLines="3"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Видимость метки"
+        android:layout_marginTop="16dp"/>
+
+    <RadioGroup
+        android:id="@+id/rg_mark_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/rb_public"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Публичная"/>
+
+        <RadioButton
+            android:id="@+id/rb_private"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Приватная"/>
+    </RadioGroup>
+</LinearLayout>

@@ -5,28 +5,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.os.Parcel;
-import android.os.Parcelable;
 
 public class Marker implements Parcelable{
     private String id;
+    private String geohash;
     public double latitude;
     public double longitude;
     public String name;
     private String note;
     private String status; // "public" или "private"
-    private String userId;
     private long timestamp;
-    private transient String geohashCache;
+    private String userId;
+    //private transient String geohashCache;
 //
     public Marker() {}
+
     // Конструктор для Parcelable
     protected Marker(Parcel in) {
         id = in.readString();
-        name = in.readString();
+        geohash = in.readString();
         latitude = in.readDouble();
         longitude = in.readDouble();
-        status = in.readString();
+        name = in.readString();
         note = in.readString();
+        status = in.readString();
+        timestamp = in.readLong();
+        userId = in.readString();
     }
 
 
@@ -53,13 +57,46 @@ public class Marker implements Parcelable{
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(id);
-        dest.writeString(name);
+        dest.writeString(geohash);
         dest.writeDouble(latitude);
         dest.writeDouble(longitude);
-        dest.writeString(status);
+        dest.writeString(name);
         dest.writeString(note);
+        dest.writeString(status);
+        dest.writeLong(timestamp);
+        dest.writeString(userId);
+
     }
+
+    // Геттеры и сеттеры для всех полей
     public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
+
+    public double getLatitude() { return latitude; }
+    public void setLatitude(double latitude) { this.latitude = latitude; }
+
+    public double getLongitude() { return longitude; }
+    public void setLongitude(double longitude) { this.longitude = longitude; }
+
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+
+    public String getNote() { return note; }
+    public void setNote(String note) { this.note = note; }
+
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
+
+    public String getUserId() { return userId; }
+    public void setUserId(String userId) { this.userId = userId; }
+
+    public long getTimestamp() { return timestamp; }
+    public void setTimestamp(long timestamp) { this.timestamp = timestamp; }
+
+    public String getGeohash() { return geohash; }
+    public void setGeohash(String geohash) { this.geohash = geohash; }
+
+    /*public String getId() { return id; }
     public String getName() { return name; }
     public double getLatitude() { return latitude; }
     public double getLongitude() { return longitude; }
@@ -72,9 +109,26 @@ public class Marker implements Parcelable{
     public void setId(String id) {
         this.id = id;
     }
+    public void setLatitude(double latitude) { this.latitude = this.latitude; }
+    public void setLongitude(double longitude) { this.longitude = this.longitude; }
+    public void setName(String s) { this.name = name; }
     public void setNote(String note) {
         this.note = note;
     }
+    public void setStatus(String status) { this.status = status; }
+    public void setUserId(String userId) { this.userId = userId; }
+    public void setTimestamp(long timestamp) { this.timestamp = timestamp; }
+    public void setGeohash(String geohash) { this.geohash = geohash; }
+    */
+
+    /*public void setStatus(String status) {
+        if ("public".equals(status) || "private".equals(status)) {
+            this.status = status;
+        } else {
+            throw new IllegalArgumentException("Invalid status. Must be 'public' or 'private'");
+        }
+    }*/
+
 
     // Основной метод поиска
     public static List<Marker> findMarkersInRadius(List<Marker> allMarkers,
@@ -233,12 +287,12 @@ public static List<String> getNeighboringGeohashes(String geohash) {
         return 8; // ~20 м (для очень малых радиусов)
     }
 
+
     // Кэшированный геохеш
-    public String getGeohash(int precision) {
+    /*public String getGeohash(int precision) {
         if (geohashCache == null || geohashCache.length() != precision) {
             geohashCache = GeoHashConverter.encode(latitude, longitude, precision);
         }
         return geohashCache;
-    }
-
+    }*/
 }

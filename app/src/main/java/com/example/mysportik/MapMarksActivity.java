@@ -197,11 +197,21 @@ package com.example.mysportik;
 
 import android.graphics.PointF;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.yandex.mapkit.MapKitFactory;
 import com.yandex.mapkit.geometry.Point;
 import com.yandex.mapkit.map.CameraPosition;
@@ -223,9 +233,16 @@ public class MapMarksActivity extends AppCompatActivity {
     private final HashMap<MapObject, String> markerNotes = new HashMap<>();
     private MapObject selectedMarker = null;
 
+    private DatabaseReference mDatabase;
+    private FirebaseAuth mAuth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Инициализация Firebase
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mAuth = FirebaseAuth.getInstance();
+
         // Инициализация Yandex MapKit
         MapKitFactory.setApiKey("4f7c3577-6bf8-4a85-9d77-552f8d759852");
         MapKitFactory.initialize(this);
@@ -325,13 +342,16 @@ public class MapMarksActivity extends AppCompatActivity {
         marker.addTapListener((mapObject, point) -> {
             if (isNoteMode) {
                 selectedMarker = mapObject;
-                showNoteDialog();
+                // Получаем координаты метки
+                Point markerPosition = ((PlacemarkMapObject) mapObject).getGeometry();
+                // Передаем координаты в диалог
+                showNoteDialog(markerPosition);
             }
             return true;
         });
     }
 
-    private void showNoteDialog() {
+    /*private void showNoteDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Добавить заметку");
 
@@ -348,7 +368,115 @@ public class MapMarksActivity extends AppCompatActivity {
         });
         builder.setNegativeButton("Отмена", (dialog, which) -> dialog.cancel());
         builder.show();
+    }*/
+
+    private void showNoteDialog(Point point) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_mark_info, null);
+        builder.setView(dialogView);
+
+        EditText etName = dialogView.findViewById(R.id.et_mark_name);
+        EditText etNote = dialogView.findViewById(R.id.et_mark_note);
+        RadioGroup rgStatus = dialogView.findViewById(R.id.rg_mark_status);
+        RadioButton rbPublic = dialogView.findViewById(R.id.rb_public);
+
+        // Установка статуса по умолчанию
+        rbPublic.setChecked(true);
+
+        builder.setPositiveButton("Сохранить", (dialog, which) -> {
+            String name = etName.getText().toString().trim();
+            String note = etNote.getText().toString().trim();
+            String status = rgStatus.getCheckedRadioButtonId() == R.id.rb_public ? "public" : "private";
+
+            // Создание объекта Marker
+            Marker marker = new Marker();
+            marker.setLatitude(point.getLatitude());
+            marker.setLongitude(point.getLongitude());
+            marker.setName(name.isEmpty() ? "Без названия" : name);
+            marker.setNote(note);
+            marker.setStatus(status);
+            marker.setTimestamp(System.currentTimeMillis());
+
+            // Генерация геохеша (точность 8 символов)
+            marker.setGeohash(GeoHashConverter.encode(
+                    point.getLatitude(),
+                    point.getLongitude(),
+                    8
+            ));
+
+            // Установка ID пользователя
+            FirebaseUser user = mAuth.getCurrentUser();
+            if (user != null) {
+                marker.setUserId(user.getUid());
+            }
+
+            // Сохранение в Firebase
+            saveMarkerToFirebase(marker);
+        });
+
+        builder.setNegativeButton("Отмена", null);
+        builder.show();
     }
+
+    private void saveMarkerToFirebase(Marker marker) {
+        // Генерация уникального ключа
+        String key = mDatabase.child("Marks").push().getKey();
+        if (key == null) return;
+
+        // Создаем HashMap только с нужными полями (без id)
+        HashMap<String, Object> markerData = new HashMap<>();
+        markerData.put("latitude", marker.getLatitude());
+        markerData.put("longitude", marker.getLongitude());
+        markerData.put("name", marker.getName());
+        markerData.put("note", marker.getNote());
+        markerData.put("status", marker.getStatus());
+        markerData.put("userId", marker.getUserId());
+        markerData.put("timestamp", marker.getTimestamp());
+        markerData.put("geohash", marker.getGeohash());
+
+        // Сохранение в структуре Marks/{markerId}
+        mDatabase.child("Marks").child(key).setValue(markerData)
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(this, "Метка сохранена", Toast.LENGTH_SHORT).show();
+
+                    // Обновляем видимость кнопки заметок
+                    btnAddNote.setVisibility(View.VISIBLE);
+
+                    // Сбрасываем режимы
+                    isMarkerMode = false;
+                    isNoteMode = false;
+                    updateButtonStates();
+                })
+                .addOnFailureListener(e ->
+                        Toast.makeText(this, "Ошибка сохранения: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+    }
+
+    /*private void saveMarkerToFirebase(Marker marker) {
+        // Генерация уникального ключа
+        String key = mDatabase.child("Marks").push().getKey();
+        if (key == null) return;
+
+        // Установка ID маркера
+        marker.setId(key);
+
+        // Создаем HashMap со всеми полями
+        HashMap<String, Object> markerData = new HashMap<>();
+        markerData.put("latitude", marker.getLatitude());
+        markerData.put("longitude", marker.getLongitude());
+        markerData.put("name", marker.getName());
+        markerData.put("note", marker.getNote());
+        markerData.put("status", marker.getStatus());
+        markerData.put("userId", marker.getUserId());
+        markerData.put("timestamp", marker.getTimestamp());
+        markerData.put("geohash", marker.getGeohash());
+
+        // Сохранение в структуре Marks/{markerId}
+        mDatabase.child("Marks").child(key).setValue(marker)
+                .addOnSuccessListener(aVoid ->
+                        Toast.makeText(this, "Метка сохранена", Toast.LENGTH_SHORT).show())
+                .addOnFailureListener(e ->
+                        Toast.makeText(this, "Ошибка сохранения: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+    }*/
 
     @Override
     protected void onStart() {
