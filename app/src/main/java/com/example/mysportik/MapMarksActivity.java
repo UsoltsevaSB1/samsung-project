@@ -1,202 +1,9 @@
-//package com.example.mysportik;
-//import android.content.Intent;
-//import android.os.Bundle;
-//
-//import androidx.appcompat.app.AppCompatActivity;
-//
-//import com.yandex.mapkit.MapKitFactory;
-//import com.example.mysportik.databinding.ActivityMapMarksBinding;
-//
-//import java.util.ArrayList;
-//import java.util.List;
-//
-//import android.app.AlertDialog;
-//import com.yandex.mapkit.geometry.Point;
-//import com.yandex.mapkit.map.CameraPosition;
-//
-//import android.os.Bundle;
-//import android.app.AlertDialog;
-//import android.view.View;
-//import android.widget.ImageButton;
-//
-//import androidx.appcompat.app.AppCompatActivity;
-//import com.yandex.mapkit.Animation;
-//import com.yandex.mapkit.MapKitFactory;
-//import com.yandex.mapkit.geometry.Point;
-//import com.yandex.mapkit.map.CameraPosition;
-//import com.yandex.mapkit.map.CameraUpdateReason;
-//import com.yandex.mapkit.map.IconStyle;
-//import com.yandex.mapkit.map.MapObjectCollection;
-//import com.yandex.mapkit.map.PlacemarkMapObject;
-//import com.yandex.mapkit.mapview.MapView;
-//import java.util.ArrayList;
-//import java.util.List;
-//
-//
-//import com.yandex.mapkit.map.CameraPosition;
-//import com.yandex.mapkit.map.CameraUpdateReason;
-//
-//import java.util.Locale;
-//
-//
-//
-//public class MapMarksActivity extends AppCompatActivity {
-//    private ActivityMapMarksBinding binding;
-//    private static final String MAPKIT_API_KEY = "0f9cf834-949f-4b43-b614-25dc4b4b47f6";
-//    private Marker currentMarker;
-//
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        MapKitFactory.setApiKey(MAPKIT_API_KEY);
-//        MapKitFactory.initialize(this);
-//        binding = ActivityMapMarksBinding.inflate(getLayoutInflater());
-//        setContentView(binding.getRoot());
-//
-//        // Получаем данные метки из Intent
-//        if (getIntent() != null && getIntent().hasExtra("marker")) {
-//            currentMarker = getIntent().getParcelableExtra("marker");
-//            initializeMapWithMarker();
-//        }
-//        ImageButton backButton = findViewById(R.id.backButton1);
-//        // Обработчик клика
-//        backButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                // Создаем Intent для перехода на LoginActivity
-//                Intent intent = new Intent(MapMarksActivity.this, UserMarksActivity.class);
-//                startActivity(intent);
-//                finish();
-//            }
-//        });
-//    }
-//
-//    private void initializeMapWithMarker() {
-//        binding.getRoot().post(() -> {
-//            if (binding.mapview.getMap() != null) {
-//                setupMap();
-//            } else {
-//                binding.getRoot().postDelayed(this::setupMap, 300);
-//            }
-//        });
-//    }
-//
-//    private void setupMap() {
-//        // Очищаем старые метки
-//        binding.mapview.getMap().getMapObjects().clear();
-//
-//        // Добавляем новую метку
-//        Point point = new Point(currentMarker.getLatitude(), currentMarker.getLongitude());
-//        PlacemarkMapObject placemark = binding.mapview.getMap().getMapObjects().addPlacemark(point);
-//
-//        // Настраиваем внешний вид метки
-//        placemark.setOpacity(25.0f);
-//        placemark.setDraggable(false);
-//
-//        // Увеличиваем размер метки
-//        IconStyle iconStyle = new IconStyle();
-//        iconStyle.setScale(2.0f); // 2.0 делает метку в 2 раза больше
-//        placemark.setIconStyle(iconStyle);
-//
-//        // Обработчик нажатия на метку
-//        placemark.addTapListener((mapObject, point1) -> {
-//            showMarkerInfo(currentMarker);
-//            return true;
-//        });
-//
-//        // Центрируем карту на метке с увеличенным зумом
-//        binding.mapview.getMap().move(
-//                new CameraPosition(point, 18f, 0f, 0f), // Увеличили зум до 18
-//                new Animation(Animation.Type.SMOOTH, 0.5f),
-//                null
-//        );
-//    }
-//
-//    private void showMarkerInfo(Marker marker) {
-//        new AlertDialog.Builder(this)
-//                .setTitle(marker.getName())
-//                .setMessage(formatMarkerInfo(marker))
-//                .setPositiveButton("OK", null)
-//                .show();
-//    }
-//
-//    private String formatMarkerInfo(Marker marker) {
-//        String note = marker.getNote();
-//        if (note == null || note.isEmpty()) {
-//            note = "Нет заметки";
-//        }
-//        return String.format(Locale.getDefault(),
-//                "Координаты: %.6f, %.6f\n\nЗаметка: %s",
-//                marker.getLatitude(),
-//                marker.getLongitude(),
-//                note);
-//    }
-//
-//    // Остальные методы жизненного цикла остаются без изменений
-//    @Override
-//    protected void onStart() {
-//        super.onStart();
-//        MapKitFactory.getInstance().onStart();
-//        binding.mapview.onStart();
-//    }
-//
-//    @Override
-//    protected void onStop() {
-//        binding.mapview.onStop();
-//        MapKitFactory.getInstance().onStop();
-//        super.onStop();
-//    }
-//}
-
-
-
-
-
-
-
-//public class MapMarksActivity extends AppCompatActivity {
-//    private ActivityMapMarksBinding binding;
-//    private static final String MAPKIT_API_KEY = "0f9cf834-949f-4b43-b614-25dc4b4b47f6";
-//
-//
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setApiKey(savedInstanceState); // Проверяем и устанавливаем API-ключ
-//        MapKitFactory.initialize(this); // Инициализация MapKit
-//        binding = ActivityMapMarksBinding.inflate(getLayoutInflater());
-//        setContentView(binding.getRoot());
-//    }
-//
-//    private void setApiKey(Bundle savedInstanceState) {
-//        boolean haveApiKey = savedInstanceState != null && savedInstanceState.getBoolean("haveApiKey");
-//        if (!haveApiKey) {
-//            MapKitFactory.setApiKey(MAPKIT_API_KEY);
-//        }
-//    }
-//    @Override
-//    protected void onSaveInstanceState(Bundle outState) {
-//        super.onSaveInstanceState(outState);
-//        outState.putBoolean("haveApiKey", true);
-//    }
-//
-//    @Override
-//    protected void onStart() {
-//        super.onStart();
-//        MapKitFactory.getInstance().onStart();
-//        binding.mapview.onStart();
-//    }
-//
-//    @Override
-//    protected void onStop() {
-//        binding.mapview.onStop();
-//        MapKitFactory.getInstance().onStop();
-//        super.onStop();
-//    }}
 package com.example.mysportik;
 
+import android.animation.ValueAnimator;
 import android.graphics.PointF;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -212,10 +19,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.yandex.mapkit.Animation;
 import com.yandex.mapkit.MapKitFactory;
 import com.yandex.mapkit.geometry.Point;
 import com.yandex.mapkit.map.CameraPosition;
 import com.yandex.mapkit.map.IconStyle;
+import com.yandex.mapkit.map.MapObjectCollection;
 import com.yandex.mapkit.map.PlacemarkMapObject;
 import com.yandex.runtime.image.ImageProvider;
 import com.yandex.mapkit.map.InputListener;
@@ -223,7 +32,11 @@ import com.yandex.mapkit.map.Map;
 import com.yandex.mapkit.map.MapObject;
 import com.yandex.mapkit.map.MapObjectTapListener;
 import com.yandex.mapkit.mapview.MapView;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 public class MapMarksActivity extends AppCompatActivity {
     private MapView mapView;
@@ -236,44 +49,171 @@ public class MapMarksActivity extends AppCompatActivity {
     private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // Инициализация Firebase
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-        mAuth = FirebaseAuth.getInstance();
+    private List<PlacemarkMapObject> markers = new ArrayList<>();
 
-        // Инициализация Yandex MapKit
-        MapKitFactory.setApiKey("4f7c3577-6bf8-4a85-9d77-552f8d759852");
-        MapKitFactory.initialize(this);
-        setContentView(R.layout.activity_map_marks);
+//    @Override
+//    protected void onCreate(Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//        // Инициализация Firebase
+//        mDatabase = FirebaseDatabase.getInstance().getReference();
+//        mAuth = FirebaseAuth.getInstance();
+//
+//        // Инициализация Yandex MapKit
+//        MapKitFactory.setApiKey("4f7c3577-6bf8-4a85-9d77-552f8d759852");
+//        MapKitFactory.initialize(this);
+//        setContentView(R.layout.activity_map_marks);
+//
+//
+//        mapView = findViewById(R.id.mapview);
+//        btnAddMarker = findViewById(R.id.btn_add_marker);
+//        btnAddNote = findViewById(R.id.btn_add_note);
+//
+//        // Установка начальной позиции карты (Москва)
+//        mapView.getMap().move(
+//                new CameraPosition(new Point(55.751574, 37.573856), 10, 0, 0)
+//        );
+//
+//        // Обработчики кнопок
+//        btnAddMarker.setOnClickListener(v -> {
+//            isMarkerMode = !isMarkerMode;
+//            isNoteMode = false;
+//            updateButtonStates();
+//            updateMapListeners();
+//        });
+//
+//        btnAddNote.setOnClickListener(v -> {
+//            isNoteMode = !isNoteMode;
+//            isMarkerMode = false;
+//            updateButtonStates();
+//            updateMapListeners();
+//        });
+//
+//        updateButtonStates();
+//    }
+@Override
+protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+
+    // Инициализация Firebase
+    mDatabase = FirebaseDatabase.getInstance().getReference();
+    mAuth = FirebaseAuth.getInstance();
+
+    // Инициализация Yandex MapKit
+    MapKitFactory.setApiKey("4f7c3577-6bf8-4a85-9d77-552f8d759852");
+    MapKitFactory.initialize(this);
+    setContentView(R.layout.activity_map_marks);
+
+    // Инициализация элементов UI
+    mapView = findViewById(R.id.mapview);
+    btnAddMarker = findViewById(R.id.btn_add_marker);
+    btnAddNote = findViewById(R.id.btn_add_note);
+
+    // Установка начальной позиции карты (Москва)
+    mapView.getMap().move(
+            new CameraPosition(new Point(55.751574, 37.573856), 10, 0, 0)
+    );
+
+    // Обработчики кнопок
+    btnAddMarker.setOnClickListener(v -> {
+        isMarkerMode = !isMarkerMode;
+        isNoteMode = false;
+        updateButtonStates();
+        updateMapListeners();
+    });
+
+    btnAddNote.setOnClickListener(v -> {
+        isNoteMode = !isNoteMode;
+        isMarkerMode = false;
+        updateButtonStates();
+        updateMapListeners();
+    });
+
+    // Добавляем слушатель изменения масштаба
+    mapView.getMap().addCameraListener((map, cameraPosition, cameraUpdateReason, finished) -> {
+        if (finished) {
+            updateMarkersVisibility();
+        }
+    });
+
+    updateButtonStates();
+    // Начальное обновление видимости меток
+    updateMarkersVisibility();
+}
+
+    private void updateMarkersVisibility() {
+        try {
+            float currentZoom = mapView.getMap().getCameraPosition().getZoom();
+            float minZoom = 10f;
+            float maxZoom = 19f;
+
+            for (PlacemarkMapObject marker : markers) {
+                boolean shouldBeVisible = currentZoom >= minZoom && currentZoom <= maxZoom;
+                marker.setVisible(shouldBeVisible);
+
+                if (shouldBeVisible) {
+                    float scale = 0.5f + (currentZoom - 10) * 0.1f;
+                    marker.setIconStyle(new IconStyle()
+                            .setScale(scale)
+                            .setAnchor(new PointF(0.5f, 1.0f))
+                    );
+                }
+            }
+        } catch (Exception e) {
+            Log.e("MapError", "Ошибка обновления меток", e);
+        }
+    }
 
 
-        mapView = findViewById(R.id.mapview);
-        btnAddMarker = findViewById(R.id.btn_add_marker);
-        btnAddNote = findViewById(R.id.btn_add_note);
+//    private void updateSingleMarker(PlacemarkMapObject marker, float currentZoom, float minZoom, float maxZoom) {
+//        boolean shouldBeVisible = currentZoom >= minZoom && currentZoom <= maxZoom;
+//        marker.setVisible(shouldBeVisible);
+//
+//        if (shouldBeVisible) {
+//            float scale = calculateMarkerScale(currentZoom);
+//            marker.setIconStyle(new IconStyle()
+//                    .setScale(scale)
+//                    .setAnchor(new PointF(0.5f, 1.0f))
+//            );
+//        }
+//    }
 
-        // Установка начальной позиции карты (Москва)
-        mapView.getMap().move(
-                new CameraPosition(new Point(55.751574, 37.573856), 10, 0, 0)
+    private float calculateMarkerScale(float zoom) {
+        return 0.5f + (zoom - 10) * 0.1f; // Пример: масштаб от 0.5 до 1.5
+    }
+
+    private void addMarker(Point point) {
+        PlacemarkMapObject marker = mapView.getMap().getMapObjects().addPlacemark(point);
+        markers.add(marker); // Добавляем маркер в список
+
+        // Начальные стили
+        IconStyle iconStyle = new IconStyle()
+                .setAnchor(new PointF(0.5f, 1.0f))
+                .setScale(calculateMarkerScale(mapView.getMap().getCameraPosition().getZoom()));
+
+        marker.setIcon(
+                ImageProvider.fromResource(this, R.drawable.ic_map_marker),
+                iconStyle
         );
 
-        // Обработчики кнопок
-        btnAddMarker.setOnClickListener(v -> {
-            isMarkerMode = !isMarkerMode;
-            isNoteMode = false;
-            updateButtonStates();
-            updateMapListeners();
+        // Анимация появления
+        marker.setOpacity(0f);
+        ValueAnimator fadeAnim = ValueAnimator.ofFloat(0f, 1f);
+        fadeAnim.setDuration(300);
+        fadeAnim.addUpdateListener(animation -> {
+            marker.setOpacity((float) animation.getAnimatedValue());
+        });
+        fadeAnim.start();
+
+        // Обработчик клика
+        marker.addTapListener((mapObject, pt) -> {
+            if (isNoteMode) {
+                selectedMarker = mapObject;
+                showNoteDialog(((PlacemarkMapObject) mapObject).getGeometry());
+            }
+            return true;
         });
 
-        btnAddNote.setOnClickListener(v -> {
-            isNoteMode = !isNoteMode;
-            isMarkerMode = false;
-            updateButtonStates();
-            updateMapListeners();
-        });
-
-        updateButtonStates();
+        btnAddNote.setVisibility(View.VISIBLE);
     }
 
     private void updateButtonStates() {
@@ -308,36 +248,6 @@ public class MapMarksActivity extends AppCompatActivity {
         }
     }
 
-    //    private void addMarker(Point point) {
-//        // Для версий MapKit 4.0+
-//        PlacemarkMapObject marker = mapView.getMap().getMapObjects().addPlacemark(
-//                point,
-//                ImageProvider.fromResource(this, R.drawable.ic_map_marker),
-//                new IconStyle().setAnchor(new PointF(0.5f, 1.0f)).setScale(1.5f)
-//        );
-//
-//        setupMarkerTapListener(marker);
-//        btnAddNote.setVisibility(View.VISIBLE);
-//    }
-    private void addMarker(Point point) {
-        // Создаем метку с минимальным размером
-        PlacemarkMapObject marker = mapView.getMap().getMapObjects().addPlacemark(point);
-
-        // Настройка стиля для маленькой точки
-        IconStyle iconStyle = new IconStyle()
-                .setAnchor(new PointF(0.5f, 0.5f)) // Центр точки
-                .setScale(0.05f); // Масштаб (0.5 = 50% от исходного размера)
-
-        // Установка иконки (либо ваш маленький PNG, либо вектор)
-        marker.setIcon(
-                ImageProvider.fromResource(this, R.drawable.ic_map_marker),
-                iconStyle
-        );
-
-        setupMarkerTapListener(marker);
-        btnAddNote.setVisibility(View.VISIBLE);
-    }
-
     private void setupMarkerTapListener(MapObject marker) {
         marker.addTapListener((mapObject, point) -> {
             if (isNoteMode) {
@@ -350,26 +260,6 @@ public class MapMarksActivity extends AppCompatActivity {
             return true;
         });
     }
-
-    /*private void showNoteDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Добавить заметку");
-
-        final EditText input = new EditText(this);
-        String existingNote = markerNotes.get(selectedMarker);
-        if (existingNote != null) {
-            input.setText(existingNote);
-        }
-        builder.setView(input);
-
-        builder.setPositiveButton("Сохранить", (dialog, which) -> {
-            String note = input.getText().toString();
-            markerNotes.put(selectedMarker, note);
-        });
-        builder.setNegativeButton("Отмена", (dialog, which) -> dialog.cancel());
-        builder.show();
-    }*/
-
     private void showNoteDialog(Point point) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_mark_info, null);
@@ -450,45 +340,17 @@ public class MapMarksActivity extends AppCompatActivity {
                 .addOnFailureListener(e ->
                         Toast.makeText(this, "Ошибка сохранения: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
-
-    /*private void saveMarkerToFirebase(Marker marker) {
-        // Генерация уникального ключа
-        String key = mDatabase.child("Marks").push().getKey();
-        if (key == null) return;
-
-        // Установка ID маркера
-        marker.setId(key);
-
-        // Создаем HashMap со всеми полями
-        HashMap<String, Object> markerData = new HashMap<>();
-        markerData.put("latitude", marker.getLatitude());
-        markerData.put("longitude", marker.getLongitude());
-        markerData.put("name", marker.getName());
-        markerData.put("note", marker.getNote());
-        markerData.put("status", marker.getStatus());
-        markerData.put("userId", marker.getUserId());
-        markerData.put("timestamp", marker.getTimestamp());
-        markerData.put("geohash", marker.getGeohash());
-
-        // Сохранение в структуре Marks/{markerId}
-        mDatabase.child("Marks").child(key).setValue(marker)
-                .addOnSuccessListener(aVoid ->
-                        Toast.makeText(this, "Метка сохранена", Toast.LENGTH_SHORT).show())
-                .addOnFailureListener(e ->
-                        Toast.makeText(this, "Ошибка сохранения: " + e.getMessage(), Toast.LENGTH_SHORT).show());
-    }*/
-
     @Override
-    protected void onStart() {
-        super.onStart();
-        MapKitFactory.getInstance().onStart();
-        mapView.onStart();
+    protected void onResume() {
+        super.onResume();
+        updateMarkersVisibility();
     }
 
     @Override
-    protected void onStop() {
-        mapView.onStop();
-        MapKitFactory.getInstance().onStop();
-        super.onStop();
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            updateMarkersVisibility();
+        }
     }
 }
