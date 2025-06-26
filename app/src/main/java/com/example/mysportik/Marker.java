@@ -2,7 +2,9 @@ package com.example.mysportik;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import android.os.Parcel;
 
@@ -95,6 +97,19 @@ public class Marker implements Parcelable{
 
     public String getGeohash() { return geohash; }
     public void setGeohash(String geohash) { this.geohash = geohash; }
+
+    public Map<String, Object> toMap() {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("latitude", latitude);
+        result.put("longitude", longitude);
+        result.put("name", name);
+        result.put("note", note);
+        result.put("status", status);
+        result.put("userId", userId);
+        result.put("timestamp", timestamp);
+        result.put("geohash", geohash);
+        return result;
+    }
 
     /*public String getId() { return id; }
     public String getName() { return name; }

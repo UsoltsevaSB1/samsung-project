@@ -8,41 +8,75 @@
     <com.yandex.mapkit.mapview.MapView
         android:id="@+id/mapview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_above="@id/bottomPanel"/>
 
-    <!-- Контейнер для кнопок в правом верхнем углу -->
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:orientation="vertical"
-        android:background="@drawable/rounded_bg"
         android:elevation="8dp">
 
-        <!-- Кнопка добавления меток -->
+        <Button
+            android:id="@+id/btn_inf"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:fontFamily="@font/ubuntu_medium"
+            android:text="info"
+            android:textColor="#808080"
+            android:textSize="7sp"
+            android:drawableTop="@drawable/info"
+            android:background="?attr/selectableItemBackgroundBorderless"/>
+
+    </LinearLayout>
+
+    <!-- Нижняя панель навигации -->
+    <LinearLayout
+        android:id="@+id/bottomPanel"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:background="#FFFFFF"
+        android:elevation="60dp"
+        android:orientation="horizontal"
+        android:weightSum="3">
+
+        <Button
+            android:id="@+id/btn_account"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:fontFamily="@font/ubuntu_medium"
+            android:text="Аккаунт"
+            android:textColor="#808080"
+            android:drawableTop="@drawable/ic_account"
+            android:background="?attr/selectableItemBackgroundBorderless"/>
+
+        <Button
+            android:id="@+id/btn_search"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:fontFamily="@font/ubuntu_medium"
+            android:text="Поиск"
+            android:textColor="#808080"
+            android:drawableTop="@drawable/ic_search"
+            android:background="?attr/selectableItemBackgroundBorderless"/>
+
         <Button
             android:id="@+id/btn_add_marker"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:fontFamily="@font/ubuntu_medium"
             android:text="Добавить метку"
-            android:padding="12dp"
-            android:backgroundTint="#4CAF50"
-            android:textColor="#FFFFFF"/>
-
-        <!-- Кнопка добавления заметок (изначально скрыта) -->
-        <Button
-            android:id="@+id/btn_add_note"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Добавить заметку"
-            android:padding="12dp"
-            android:visibility="gone"
-            android:backgroundTint="#2196F3"
-            android:textColor="#FFFFFF"/>
+            android:textColor="#808080"
+            android:drawableTop="@drawable/ic_marks"
+            android:background="?attr/selectableItemBackgroundBorderless"/>
     </LinearLayout>
 
 </RelativeLayout>
-
