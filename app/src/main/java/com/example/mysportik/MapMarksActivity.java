@@ -1,5 +1,6 @@
 package com.example.mysportik;
 
+import android.content.Intent;
 import android.graphics.PointF;
 import android.os.Bundle;
 import android.os.Handler;
@@ -68,6 +69,19 @@ public class MapMarksActivity extends AppCompatActivity {
         // Установка начальной позиции карты
         mapView.getMap().move(new CameraPosition(new Point(51.7373, 36.1874), 10, 0, 0));
 
+        ImageButton backButton;
+        backButton = findViewById(R.id.backButton2);
+        // Обработчик клика
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Создаем Intent для перехода на LoginActivity
+                Intent intent = new Intent(MapMarksActivity.this, LoginActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
         // Обработчики кнопок
         btnAddMarker.setOnClickListener(v -> {
             isMarkerMode = !isMarkerMode;
@@ -78,9 +92,18 @@ public class MapMarksActivity extends AppCompatActivity {
         // Загрузка существующих меток
         loadExistingMarkers();
 
-        findViewById(R.id.btn_account).setOnClickListener(v -> {
-            // Переход в аккаунт
+        Button marks = findViewById(R.id.btn_account);
+        marks.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MapMarksActivity.this, UserActivity.class));
+                finish();
+            }
         });
+
+//        findViewById(R.id.btn_account).setOnClickListener(v -> {
+//            // Переход в аккаунт
+//        });
 
         findViewById(R.id.btn_search).setOnClickListener(v -> {
             // Переход в поиск
@@ -451,9 +474,19 @@ public class MapMarksActivity extends AppCompatActivity {
                         PlacemarkMapObject mapObject = addMarker(point, false);
 
                         // Устанавливаем правильную иконку в зависимости от статуса
-                        int markerIconRes = marker.getStatus().equals("public")
-                                ? R.drawable.ic_map_marker
-                                : R.drawable.ic_map_marker_pr;
+//                        int markerIconRes = marker.getStatus().equals("public")
+//                                ? R.drawable.ic_map_marker
+//                                : R.drawable.ic_map_marker_pr;
+
+                        // Исправленная проверка статуса с защитой от null
+                        String status = marker.getStatus();
+                        int markerIconRes;
+
+                        if (status != null && status.equals("public")) {
+                            markerIconRes = R.drawable.ic_map_marker;
+                        } else {
+                            markerIconRes = R.drawable.ic_map_marker_pr;
+                        }
 
                         mapObject.setIcon(
                                 ImageProvider.fromResource(MapMarksActivity.this, markerIconRes),

@@ -15,11 +15,11 @@
             android:id="@+id/backButton1"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:src="@android:drawable/ic_menu_revert"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="1dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="Назад"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"/>
+            android:src="@android:drawable/ic_menu_revert" />
 
         <TextView
             android:layout_width="wrap_content"
