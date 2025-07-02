@@ -49,9 +49,10 @@ dependencies {
     implementation libs.firebase.analytics
     implementation libs.firebase.auth
     implementation libs.firebase.database
+    //implementation 'com.yandex.android:mapkit:4.4.0-full'
     
     // CircleImageView для круглых изображений
     implementation 'de.hdodenhof:circleimageview:3.1.0'
-
-    implementation 'com.yandex.android:maps.mobile:4.15.0-full'
+    implementation libs.firebase.storage
+    implementation 'com.yandex.android:maps.mobile:4.4.0-full'
 }
