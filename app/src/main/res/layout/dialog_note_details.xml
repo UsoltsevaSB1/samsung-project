@@ -1,52 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="vertical"
     android:padding="16dp">
 
-    <ImageButton
-        android:id="@+id/btn_close"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_alignParentStart="true"
-        android:src="@drawable/ic_close"
-        android:background="?attr/selectableItemBackgroundBorderless"/>
+    <TextView
+        android:id="@+id/tv_note_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:textStyle="bold"/>
 
-    <ImageButton
-        android:id="@+id/btn_options"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_alignParentEnd="true"
-        android:src="@drawable/ic_more_vert"
-        android:background="?attr/selectableItemBackgroundBorderless"/>
+    <TextView
+        android:id="@+id/tv_note_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textSize="16sp"/>
+
+    <TextView
+        android:id="@+id/tv_note_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textSize="14sp"/>
+
+    <ImageView
+        android:id="@+id/iv_note_photo"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_marginTop="8dp"
+        android:scaleType="centerCrop"
+        android:visibility="gone"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/btn_close"
-        android:layout_marginTop="16dp"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        android:layout_marginTop="8dp">
 
-        <TextView
-            android:id="@+id/tv_note_name"
-            android:layout_width="match_parent"
+        <ImageButton
+            android:id="@+id/btn_options"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:textStyle="bold"/>
+            android:src="@android:drawable/ic_menu_more"
+            android:contentDescription="Опции"/>
 
-        <TextView
-            android:id="@+id/tv_note_status"
-            android:layout_width="match_parent"
+        <ImageButton
+            android:id="@+id/btn_close"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:textColor="#757575"/>
-
-        <TextView
-            android:id="@+id/tv_note_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:textSize="16sp"/>
+            android:layout_marginStart="8dp"
+            android:src="@android:drawable/ic_menu_close_clear_cancel"
+            android:contentDescription="Закрыть"/>
     </LinearLayout>
-
-</RelativeLayout>
+</LinearLayout>

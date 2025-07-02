@@ -49,6 +49,8 @@ dependencies {
     implementation libs.firebase.analytics
     implementation libs.firebase.auth
     implementation libs.firebase.database
+    implementation libs.glide
+    annotationProcessor libs.glide.compiler
     //implementation 'com.yandex.android:mapkit:4.4.0-full'
     
     // CircleImageView для круглых изображений

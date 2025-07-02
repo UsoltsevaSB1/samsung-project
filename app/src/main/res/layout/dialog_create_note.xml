@@ -20,6 +20,22 @@
         android:hint="Текст заметки"
         android:inputType="textMultiLine"/>
 
+    <ImageButton
+        android:id="@+id/btn_add_photo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:src="@android:drawable/ic_menu_gallery"
+        android:contentDescription="Добавить фото"/>
+
+    <ImageView
+        android:id="@+id/iv_photo_preview"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_marginTop="8dp"
+        android:scaleType="centerCrop"
+        android:visibility="gone"/>
+
     <RadioGroup
         android:id="@+id/rg_note_status"
         android:layout_width="match_parent"

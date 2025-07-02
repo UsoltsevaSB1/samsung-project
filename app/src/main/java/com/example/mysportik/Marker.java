@@ -18,6 +18,7 @@ public class Marker implements Parcelable{
     private String status; // "public" или "private"
     private long timestamp;
     private String userId;
+    private String photoUrl;
     //private transient String geohashCache;
 //
     public Marker() {}
@@ -33,6 +34,7 @@ public class Marker implements Parcelable{
         status = in.readString();
         timestamp = in.readLong();
         userId = in.readString();
+        photoUrl = in.readString();
     }
 
 
@@ -67,7 +69,7 @@ public class Marker implements Parcelable{
         dest.writeString(status);
         dest.writeLong(timestamp);
         dest.writeString(userId);
-
+        dest.writeString(photoUrl);
     }
 
     // Геттеры и сеттеры для всех полей
@@ -98,6 +100,9 @@ public class Marker implements Parcelable{
     public String getGeohash() { return geohash; }
     public void setGeohash(String geohash) { this.geohash = geohash; }
 
+    public String getPhotoUrl() { return photoUrl; }
+    public void setPhotoUrl(String photoUrl) { this.photoUrl = photoUrl; }
+
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
         result.put("latitude", latitude);
@@ -108,6 +113,7 @@ public class Marker implements Parcelable{
         result.put("userId", userId);
         result.put("timestamp", timestamp);
         result.put("geohash", geohash);
+        result.put("photoUrl", photoUrl);
         return result;
     }
 
